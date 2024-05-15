@@ -46,26 +46,26 @@ resource "azurerm_resource_group" "this" {
 locals {
   nsg_rules = {
     "rule01" = {
-      network_security_group_name = "${module.naming.network_security_group.name_unique}1"
-      access                      = "Allow"
-      destination_address_prefix  = "*"
-      destination_port_range      = "*"
-      direction                   = "Inbound"
-      priority                    = 100
-      protocol                    = "Tcp"
-      source_address_prefix       = "*"
-      source_port_range           = "*"
+      name                       = "${module.naming.network_security_rule.name_unique}1"
+      access                     = "Deny"
+      destination_address_prefix = "*"
+      destination_port_range     = "80-88"
+      direction                  = "Outbound"
+      priority                   = 100
+      protocol                   = "Tcp"
+      source_address_prefix      = "*"
+      source_port_range          = "*"
     }
     "rule02" = {
-      network_security_group_name = "${module.naming.network_security_group.name_unique}2"
-      access                      = "Allow"
-      destination_address_prefix  = "*"
-      destination_port_range      = "*"
-      direction                   = "Outbound"
-      priority                    = 200
-      protocol                    = "Tcp"
-      source_address_prefix       = "*"
-      source_port_range           = "*"
+      name                       = "${module.naming.network_security_rule.name_unique}2"
+      access                     = "Allow"
+      destination_address_prefix = "*"
+      destination_port_ranges    = ["80", "443"]
+      direction                  = "Inbound"
+      priority                   = 200
+      protocol                   = "Tcp"
+      source_address_prefix      = "*"
+      source_port_range          = "*"
     }
   }
 }
@@ -78,5 +78,5 @@ module "nsg" {
   name                = module.naming.network_security_group.name_unique
   location            = azurerm_resource_group.this.location
 
-  network_security_rules = local.nsg_rules
+  security_rules = local.nsg_rules
 }
